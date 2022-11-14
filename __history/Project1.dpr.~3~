@@ -1,0 +1,18 @@
+program Project1;
+
+uses
+  Vcl.Forms,
+  FrmPrincipal in 'FrmPrincipal.pas' {Form1},
+  GestorCloud.Controller.Factory.Interfaces in 'GestorCloud.Controller.Factory.Interfaces.pas',
+  GestorCloud.Controller.Factory.Table in 'GestorCloud.Controller.Factory.Table.pas',
+  GestorCloud.Model.Table.Firedac in 'GestorCloud.Model.Table.Firedac.pas',
+  GestorCloud.Model.Table.Interfaces in 'GestorCloud.Model.Table.Interfaces.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TForm1, Form1);
+  Application.Run;
+end.
