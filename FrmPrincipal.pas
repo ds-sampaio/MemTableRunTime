@@ -8,8 +8,7 @@ uses
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls,System.JSON,DataSet.Serialize,
-  FireDAC.Stan.StorageBin, GestorCloud.Controller.Factory.Table,
-  GestorCloud.Model.Table.Firedac, GestorCloud.Model.Table.Interfaces,
+  FireDAC.Stan.StorageBin,
   System.Generics.Collections;
 
 type
@@ -21,11 +20,12 @@ type
     dtsPai: TDataSource;
     dtsFilho: TDataSource;
     Button1: TButton;
+    FDMemTable: TFDMemTable;
     procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
     FJsonObj,FJsonData,FJsonStructure : TJSONObject;
-    FListMemTable : TList<iTable>;
+    //FListMemTable : TList<iTable>;
     FMemTable1,FMemTable2 : TFDMemTable;
     procedure CriaJSON;
     procedure SetPropriedadesMT;
@@ -46,6 +46,7 @@ procedure TForm1.Button1Click(Sender: TObject);
 begin
   FMemTable1  := TFDMemTable.Create(Self);
   FMemTable2  := TFDMemTable.Create(Self);
+
   dtsPai.DataSet   := FMemTable1;
   dtsFilho.DataSet := FMemTable2;
 
