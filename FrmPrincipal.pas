@@ -20,8 +20,8 @@ type
     dtsPai: TDataSource;
     dtsFilho: TDataSource;
     Button1: TButton;
-    FDMemTable1: TFDMemTable;
-    FDMemTable2: TFDMemTable;
+    participante: TFDMemTable;
+    part_funcionario: TFDMemTable;
     procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
@@ -45,8 +45,8 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  participante  := TFDMemTable.Create(Self);
-  part_funcionario  := TFDMemTable.Create(Self);
+//  participante  := TFDMemTable.Create(Self);
+//  part_funcionario  := TFDMemTable.Create(Self);
 
   dtsPai.DataSet   := participante;
   dtsFilho.DataSet := part_funcionario;

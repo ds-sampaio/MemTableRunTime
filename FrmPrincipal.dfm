@@ -989,7 +989,7 @@ object Form1: TForm1
     Left = 456
     Top = 232
   end
-  object FDMemTable1: TFDMemTable
+  object participante: TFDMemTable
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -1000,7 +1000,7 @@ object Form1: TForm1
     Left = 512
     Top = 168
   end
-  object FDMemTable2: TFDMemTable
+  object part_funcionario: TFDMemTable
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
