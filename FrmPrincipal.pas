@@ -20,13 +20,14 @@ type
     dtsPai: TDataSource;
     dtsFilho: TDataSource;
     Button1: TButton;
-    FDMemTable: TFDMemTable;
+    FDMemTable1: TFDMemTable;
+    FDMemTable2: TFDMemTable;
     procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
     FJsonObj,FJsonData,FJsonStructure : TJSONObject;
     //FListMemTable : TList<iTable>;
-    FMemTable1,FMemTable2 : TFDMemTable;
+   // participante,part_funcionario : TFDMemTable;
     procedure CriaJSON;
     procedure SetPropriedadesMT;
     procedure InitializaMasterDetail;
@@ -44,17 +45,17 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  FMemTable1  := TFDMemTable.Create(Self);
-  FMemTable2  := TFDMemTable.Create(Self);
+  participante  := TFDMemTable.Create(Self);
+  part_funcionario  := TFDMemTable.Create(Self);
 
-  dtsPai.DataSet   := FMemTable1;
-  dtsFilho.DataSet := FMemTable2;
+  dtsPai.DataSet   := participante;
+  dtsFilho.DataSet := part_funcionario;
 
 
   CriaJSON; //Aqui separa o JSon a estrutura dos dados
   SetPropriedadesMT; //Aqui carrega a estrutura e os dados na MemTable
 
-  Memo2.Lines.Add(FMemTable1.ToJSONObject().ToJSON); //Aqui aprenda o resultado da MemTableMaster
+  Memo2.Lines.Add(participante.ToJSONObject().Format()); //Aqui aprenda o resultado da MemTableMaster
 
 
 end;
@@ -75,33 +76,63 @@ procedure TForm1.SetPropriedadesMT;
 var
   I: Integer;
 begin
-  TDataSetSerializeConfig.GetInstance.CaseNameDefinition :=
-    TCaseNameDefinition.cndLower;
+//  TDataSetSerializeConfig.GetInstance.CaseNameDefinition :=
+//    TCaseNameDefinition.cndLower;
+//
+//  {Carrega estrutura da Master}
+//  participante.LoadStructure(FJsonStructure.GetValue('participante') as TJSONArray);
+//  //participante.CreateDataSet;
+//
+//  {Carrega estrutura do detail}
+//  part_funcionario.LoadStructure(FJsonStructure.GetValue('part_funcionario') as TJSONArray);
+//  //part_funcionario.CreateDataSet;
+//
+//
+//  InitializaMasterDetail; //Configura a relação MasterDetail nas MemTable's
+//
+//  {Carraga todo os dados do Json na MemTableMaster, incluindo os detail's}
+//  participante.LoadFromJSON(FJsonData.GetValue('participante') as TJSONArray);
+    TDataSetSerializeConfig.GetInstance.CaseNameDefinition :=
+             TCaseNameDefinition.cndLower;
 
-  {Carrega estrutura da Master}
-  FMemTable1.LoadStructure(FJsonStructure.GetValue('participante') as TJSONArray);
-  FMemTable1.CreateDataSet;
 
-  {Carrega estrutura do detail}
-  FMemTable2.LoadStructure(FJsonStructure.GetValue('part_funcionario') as TJSONArray);
-  FMemTable2.CreateDataSet;
+   FJsonObj   := TJSONObject
+                   .ParseJSONValue(TEncoding
+                                     .UTF8
+                                     .GetBytes(Memo1.Lines.Text),
+                                   0) as TJSONObject;
+  FJsonData      := FJsonObj.GetValue('data') as TJSONObject;
+  FJsonStructure := FJsonObj.GetValue('structure') as TJSONObject;
 
-  InitializaMasterDetail; //Configura a relação MasterDetail nas MemTable's
 
-  {Carraga todo os dados do Json na MemTableMaster, incluindo os detail's}
-  FMemTable1.LoadFromJSON(FJsonData.GetValue('participante') as TJSONArray);
+  participante.LoadStructure(FJsonStructure.GetValue('participante') as TJSONArray);
+  part_funcionario.LoadStructure(FJsonStructure.GetValue('part_funcionario') as TJSONArray);
+
+  participante.Open;
+  part_funcionario.Open;
+
+  part_funcionario.MasterSource := dtsPai;
+  part_funcionario.MasterFields := 'id_participante';
+  part_funcionario.DetailFields := 'id_participante';
+  part_funcionario.IndexFieldNames := 'id_participante';
+
+  participante.LoadFromJSON(FJsonData.GetValue('participante') as TJSONArray);
+
+  //LJSONArray := participante.ToJSONArray;
+  Memo2.Lines.Add(participante.ToJSONObject().Format);
 
 end;
 
 procedure TForm1.InitializaMasterDetail;
 begin
 
-  FMemTable1.Open; //Master
-  FMemTable2.Open; //Detail
-  FMemTable2.MasterSource := dtsPai;
-  FMemTable2.MasterFields := 'id_participante';
-  FMemTable2.DetailFields := 'id_participante';
-  FMemTable2.IndexFieldNames := 'id_participante';
+  participante.Open;
+
+  part_funcionario.Open;
+  part_funcionario.MasterSource := dtsPai;
+  part_funcionario.MasterFields := 'id_participante'; //participante.Fields[0].FieldName;
+  part_funcionario.DetailFields := 'id_participante';//part_funcionario.Fields[0].FieldName;
+  part_funcionario.IndexFieldNames := 'id_participante'; //part_funcionario.Fields[0].FieldName;
 
 
 
